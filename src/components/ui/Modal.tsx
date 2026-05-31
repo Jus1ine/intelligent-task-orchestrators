@@ -106,7 +106,7 @@ export function Modal({ open, onClose, title, description, size = 'md', children
         {/* Content — scrolls internally on mobile when content is taller than available space */}
         <div className={cn(
           // Desktop padding and scrollability
-          'px-6 flex-1 overflow-y-auto min-h-0 custom-scrollbar',
+          'px-6 flex-1 overflow-y-auto min-h-0 scrollbar-hide',
           !title && !description ? 'pt-6' : '',
           !footer ? 'pb-6' : '',
           // Mobile: reduced padding

@@ -41,7 +41,7 @@ const TABS = {
 // ============================================================
 function App() {
   // ── Projects ──────────────────────────────────────────────
-  const { projects, createProject, deleteProject } = useProjects();
+  const { projects, loading: projectsLoading, createProject, deleteProject } = useProjects();
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const selectedProject = projects.find((p) => p.id === selectedProjectId) ?? null;
 
@@ -256,7 +256,12 @@ function App() {
         />
 
         <main className="app-main">
-          {selectedProjectId ? (
+          {projectsLoading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-8 h-8 border-4 border-slate-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+              <p className="text-slate-500 font-medium">Loading your projects...</p>
+            </div>
+          ) : selectedProjectId ? (
             <>
               {/* Add Task Control */}
               <div className="mb-6 flex items-center justify-between">

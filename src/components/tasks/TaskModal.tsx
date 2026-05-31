@@ -87,6 +87,7 @@ export function TaskModal({
   const [saving, setSaving] = useState(false);
   const [savingBulk, setSavingBulk] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
+  const [magicError, setMagicError] = useState(false);
   const [generated, setGenerated] = useState<GeneratedSubtask[]>([]);
 
   // Reset/Prefill on open
@@ -108,6 +109,7 @@ export function TaskModal({
       setSaving(false);
       setSavingBulk(false);
       setMagicLoading(false);
+      setMagicError(false);
     }
   }, [open, mode, task]);
 
@@ -207,15 +209,15 @@ export function TaskModal({
   // ----------------------------------------------------------
   const handleMagicGenerate = async () => {
     setMagicLoading(true);
+    setMagicError(false);
     try {
       const res = await generateSubtasks(projectTitle, projectDescription);
       setGenerated(res);
     } catch (err: any) {
+      setMagicError(true);
       const msg = err?.message ?? 'AI generation failed';
       if (msg.includes('VITE_OPENROUTER_API_KEY')) {
         onError?.('Magic Generate requires an OpenRouter API key in your .env file.');
-      } else {
-        onError?.(`Magic Generate failed: ${msg}`);
       }
     } finally {
       setMagicLoading(false);
@@ -321,6 +323,19 @@ export function TaskModal({
           </Button>
         </div>
 
+        {/* Magic Error State */}
+        {magicError && (
+          <div className="my-6 p-5 border border-rose-100 bg-rose-50 rounded-xl flex flex-col items-center text-center">
+            <h3 className="text-[15px] font-semibold text-rose-900 mb-2">⚠️ Unable to generate subtasks right now.</h3>
+            <p className="text-sm text-rose-700 mb-4 px-2">
+              The AI service is temporarily unavailable. Please try again in a few moments.
+            </p>
+            <Button variant="outline" className="border-rose-200 text-rose-700 hover:bg-rose-100 bg-white" onClick={handleMagicGenerate}>
+              Try Again
+            </Button>
+          </div>
+        )}
+
         {/* Description */}
         <Textarea
           label="Description"
@@ -336,7 +351,7 @@ export function TaskModal({
             <h2 className="text-[15px] font-semibold text-slate-900 mb-3 flex items-center gap-2">
               Generated Tasks Preview
             </h2>
-            <div className="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+            <div className="max-h-[300px] overflow-y-auto space-y-3 pr-2 scrollbar-hide">
               {generated.map((item, idx) => (
                 <div key={idx} className="border border-slate-200 rounded-lg p-3 bg-white shadow-sm relative group">
                   <button
