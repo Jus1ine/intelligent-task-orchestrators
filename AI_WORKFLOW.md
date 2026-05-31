@@ -8,7 +8,7 @@ This project was developed through a hybrid approach combining **AI-assisted sof
 
 AI tools were leveraged as a pair-programming partner to accelerate the development lifecycle. Key areas of AI contribution included:
 
-* **Cursor IDE Scaffolding:** Leveraging Cursor to rapidly scaffold the initial React/Vite file structure, state management patterns using Custom Hooks (`useTasks`, `useProjects`), and the DnD-kit integration for the Kanban board.
+* **GitHub Copilot Assistance:** Leveraging GitHub Copilot for context-aware code suggestions, rapid problem-solving, and debugging specific implementation challenges across React, state management, and API integrations.
 * **Database & Backend Guidance:** Providing the initial Supabase setup, recommending standard PostgreSQL schemas, and configuring the `@supabase/supabase-js` client connection.
 * **OpenRouter API Integration:** Scaffolding the `fetch` calls and environment variable setup for the Llama 3.1 8B model integration.
 * **Prompt Engineering Strategies:** Drafting the initial system prompts to ensure the LLM returned structured, actionable JSON arrays for the Magic Generate feature.
@@ -48,8 +48,8 @@ Magic Generate uses the OpenRouter API (running `meta-llama/llama-3.1-8b-instruc
 
 While AI significantly sped up development, it also introduced specific bugs that required manual intervention and architectural course-correction.
 
-### Instance: Claude's Supabase Schema Mismatch
-During the Supabase migration, Claude generated a buggy SQL schema (using a `title` column and a `status` enum) that fundamentally mismatched the application's actual TypeScript data models (which relied on `text`, `completed` booleans, and `archived` flags). 
+### Instance: Copilot Supabase Schema Mismatch
+During the Supabase migration, Copilot generated a buggy SQL schema suggestion (using a `title` column and a `status` enum) that fundamentally mismatched the application's actual TypeScript data models (which relied on `text`, `completed` booleans, and `archived` flags). 
 
 * **The Problem:** Deploying the AI-generated SQL caused immediate runtime errors because the frontend was trying to write to columns that didn't exist in the database.
 * **The Resolution:** Instead of relying on a follow-up prompt which might have further complicated the schema, the developer performed a **manual edit**. The SQL migration file (`001_initial_schema.sql`) was manually audited and rewritten by the developer to perfectly match the `src/types/index.ts` models, converting the enums to booleans and adding JSONB support for subtasks.
@@ -60,7 +60,7 @@ During the Supabase migration, Claude generated a buggy SQL schema (using a `tit
 
 By employing this hybrid AI-human workflow, the development lifecycle saw significant efficiency gains, offset slightly by time spent debugging AI hallucinations:
 
-* **Scaffolding Efficiency:** ~80% time saved on boilerplate generation (React setup, routing, hook structure) using Cursor.
+* **Problem-Solving Efficiency:** ~80% time saved on debugging, writing boilerplate, and resolving specific implementation hurdles using GitHub Copilot.
 * **API Integration:** ~60% time saved on OpenRouter / Supabase API wire-up.
 * **Design & UX:** 0% time saved. The developer manually engineered 100% of the UI/UX design to meet premium quality standards.
 * **Net Development Velocity:** Estimated **2.5x to 3x faster** overall compared to a purely manual development process, shrinking what would typically be a week-long project into a robust two-day sprint.
