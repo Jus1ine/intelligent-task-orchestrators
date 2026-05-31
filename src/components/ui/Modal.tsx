@@ -62,14 +62,14 @@ export function Modal({ open, onClose, title, description, size = 'md', children
       <div
         className={cn(
           // ── Base (desktop) ──
-          'relative z-10 w-full bg-white rounded-2xl shadow-2xl shadow-slate-900/10',
+          'relative z-10 w-full flex flex-col max-h-[90vh] bg-white rounded-2xl shadow-2xl shadow-slate-900/10',
           'animate-zoom-in',
           'border border-slate-100',
           sizeClasses[size],
           // ── Mobile overrides ──
           // Full width, flat bottom, rounded top, 90dvh height cap
           'max-md:max-w-full max-md:rounded-b-none max-md:rounded-t-2xl',
-          'max-md:flex max-md:flex-col max-md:max-h-[90dvh]',
+          'max-md:max-h-[90dvh]',
         )}
         role="dialog"
         aria-modal="true"
@@ -105,12 +105,12 @@ export function Modal({ open, onClose, title, description, size = 'md', children
 
         {/* Content — scrolls internally on mobile when content is taller than available space */}
         <div className={cn(
-          // Desktop padding
-          'px-6',
+          // Desktop padding and scrollability
+          'px-6 flex-1 overflow-y-auto min-h-0 custom-scrollbar',
           !title && !description ? 'pt-6' : '',
           !footer ? 'pb-6' : '',
-          // Mobile: reduced padding, flex-1 fills remaining height, scrollable
-          'max-md:px-4 max-md:overflow-y-auto max-md:flex-1 max-md:min-h-0',
+          // Mobile: reduced padding
+          'max-md:px-4',
           !title && !description ? 'max-md:pt-4' : '',
           !footer ? 'max-md:pb-6' : '',
         )}>
