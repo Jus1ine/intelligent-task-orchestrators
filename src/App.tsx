@@ -8,7 +8,7 @@ import {
   DragOverlay,
 } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
-import { Plus } from 'lucide-react';
+import { Plus, Info } from 'lucide-react';
 
 import { useProjects } from './hooks/useProjects';
 import { useTasks } from './hooks/useTasks';
@@ -25,6 +25,7 @@ import { Button } from './components/ui/Button';
 import { ProjectForm } from './components/projects/ProjectForm';
 import { TaskModal } from './components/tasks/TaskModal';
 import { DeleteConfirmModal } from './components/tasks/DeleteConfirmModal';
+import { MagicGuideModal } from './components/tasks/MagicGuideModal';
 
 // ============================================================
 // Tab constants
@@ -74,6 +75,7 @@ function App() {
   const [taskModalMode, setTaskModalMode] = useState<'create' | 'edit'>('create');
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+  const [guideOpen, setGuideOpen] = useState(false);
 
   // ── Toast ─────────────────────────────────────────────────
   const { toasts, addToast, removeToast } = useToast();
@@ -266,9 +268,14 @@ function App() {
               {/* Add Task Control */}
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-slate-800">Tasks</h2>
-                <Button variant="primary" icon={<Plus size={16} />} onClick={openCreateModal}>
-                  Add Task
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="secondary" icon={<Info size={16} />} onClick={() => setGuideOpen(true)}>
+                    AI Guide
+                  </Button>
+                  <Button variant="primary" icon={<Plus size={16} />} onClick={openCreateModal}>
+                    Add Task
+                  </Button>
+                </div>
               </div>
 
               <TaskList
@@ -357,6 +364,11 @@ function App() {
           taskTitle={deletingTask?.text ?? ''}
           onClose={() => setDeletingTaskId(null)}
           onConfirm={() => handleDeleteTask(deletingTaskId!)}
+        />
+        
+        <MagicGuideModal 
+          open={guideOpen} 
+          onClose={() => setGuideOpen(false)} 
         />
       </div>
     </DndContext>
