@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Intelligent Task Orchestrator — AI-Powered Kanban Board</title>
+    <meta name="description" content="A production-ready AI-powered Kanban board for managing projects and tasks. Generate subtasks instantly with Magic AI generation powered by OpenRouter." />
+    <meta name="theme-color" content="#6366f1" />
+    <meta property="og:title" content="Intelligent Task Orchestrator" />
+    <meta property="og:description" content="AI-powered project and task management with a premium Kanban board." />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      window.addEventListener('error', function(event) {
+        document.body.innerHTML += '<div style="color:red;padding:20px;z-index:9999;position:fixed;background:#fff5f5;top:0;left:0;width:100vw;height:100vh;overflow:auto;font-family:monospace;font-size:14px;"><strong>Fatal Error:</strong><br><br><pre>' + (event.error ? event.error.stack : event.message) + '</pre></div>';
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        document.body.innerHTML += '<div style="color:red;padding:20px;z-index:9999;position:fixed;background:#fff5f5;top:0;left:0;width:100vw;height:100vh;overflow:auto;font-family:monospace;font-size:14px;"><strong>Unhandled Promise Rejection:</strong><br><br><pre>' + (event.reason ? (event.reason.stack || event.reason) : 'Unknown reason') + '</pre></div>';
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
