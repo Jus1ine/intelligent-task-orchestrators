@@ -85,7 +85,6 @@ export function TaskModal({
   
   // Loading & View State
   const [saving, setSaving] = useState(false);
-  const [savingBulk, setSavingBulk] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
   const [magicError, setMagicError] = useState(false);
   const [generated, setGenerated] = useState<GeneratedSubtask[]>([]);
@@ -107,7 +106,6 @@ export function TaskModal({
       setErrors({});
       setGenerated([]);
       setSaving(false);
-      setSavingBulk(false);
       setMagicLoading(false);
       setMagicError(false);
     }
@@ -178,6 +176,15 @@ export function TaskModal({
 
   const handleSaveSingle = async () => {
     if (!validate()) return;
+    
+    if (generated.length > 0) {
+      const hasEmpty = generated.some((g) => !g.title.trim());
+      if (hasEmpty) {
+        onError?.('All AI tasks must have a title.');
+        return;
+      }
+    }
+
     setSaving(true);
     try {
       const flags = getTaskFlagsFromStatus(status);
@@ -194,8 +201,19 @@ export function TaskModal({
         await onCreate(data);
       }
       
-      // If we also had generated tasks, maybe the user wanted them saved too? 
-      // We will let "Add All Generated Tasks" handle that instead to be clear.
+      if (generated.length > 0 && onBulkCreate) {
+        const taskInputs = generated.map((g) => ({
+          text: g.title.trim(),
+          description: g.description,
+          category: g.category,
+          completed: false,
+          archived: false,
+          image: null,
+          subtasks: [],
+        }));
+        await onBulkCreate(taskInputs as any);
+      }
+
       onClose();
     } catch (err: any) {
       onError?.(err.message || 'Failed to save task.');
@@ -236,38 +254,7 @@ export function TaskModal({
     setGenerated(updated);
   };
 
-  const handleSaveBulk = async () => {
-    if (generated.length === 0) return;
-    
-    // Validate all generated titles
-    const hasEmpty = generated.some((g) => !g.title.trim());
-    if (hasEmpty) {
-      onError?.('All AI tasks must have a title.');
-      return;
-    }
 
-    setSavingBulk(true);
-    try {
-      const taskInputs = generated.map((g) => ({
-        text: g.title.trim(),
-        description: g.description,
-        category: g.category,
-        completed: false,
-        archived: false,
-        image: null,
-        subtasks: [],
-      }));
-
-      if (onBulkCreate) {
-        await onBulkCreate(taskInputs as any);
-      }
-      onClose();
-    } catch (err: any) {
-      onError?.(err.message || 'Failed to save AI tasks.');
-    } finally {
-      setSavingBulk(false);
-    }
-  };
 
   // ============================================================
   // Render
@@ -281,19 +268,12 @@ export function TaskModal({
       size="md"
       footer={
         <div className="flex w-full items-center justify-between">
-          <Button variant="ghost" onClick={onClose} disabled={saving || savingBulk}>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
             Cancel
           </Button>
-          <div className="flex gap-2">
-            {generated.length > 0 && (
-              <Button variant="primary" loading={savingBulk} disabled={saving} onClick={handleSaveBulk}>
-                Add Generated Tasks
-              </Button>
-            )}
-            <Button variant={generated.length > 0 ? "outline" : "primary"} loading={saving} disabled={savingBulk} onClick={handleSaveSingle}>
-              {mode === 'edit' ? 'Save Changes' : 'Save Task'}
-            </Button>
-          </div>
+          <Button variant="primary" loading={saving} onClick={handleSaveSingle}>
+            {mode === 'edit' ? 'Save Changes' : 'Save Task'}
+          </Button>
         </div>
       }
     >
