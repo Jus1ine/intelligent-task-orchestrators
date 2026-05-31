@@ -65,7 +65,7 @@ export function useTasks(projectId: string | null) {
             position: nextPosition,
             completed: false,
             archived: false,
-          },
+          } as never,
         ])
         .select()
         .single();
@@ -90,7 +90,7 @@ export function useTasks(projectId: string | null) {
 
       const { error: updateError } = await supabase
         .from('tasks')
-        .update(updates as any)
+        .update(updates as never)
         .eq('id', id);
 
       if (updateError) {
@@ -164,13 +164,13 @@ export function useTasks(projectId: string | null) {
 
       const { error: rpcError } = await supabase.rpc('reorder_tasks', {
         updates: payload,
-      });
+      } as any);
 
       if (rpcError) {
         // If RPC fails, fall back to sequential updates
         console.warn('[useTasks] reorder_tasks RPC failed, falling back:', rpcError.message);
         for (const t of withPositions) {
-          await supabase.from('tasks').update({ position: t.position }).eq('id', t.id);
+          await supabase.from('tasks').update({ position: t.position } as never).eq('id', t.id);
         }
       }
     },
@@ -195,7 +195,7 @@ export function useTasks(projectId: string | null) {
 
       const { data, error: insertError } = await supabase
         .from('tasks')
-        .insert(rows)
+        .insert(rows as never[])
         .select();
 
       if (insertError) throw insertError;

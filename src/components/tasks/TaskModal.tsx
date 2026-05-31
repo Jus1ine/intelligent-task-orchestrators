@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Sparkles, Trash2 } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
@@ -27,11 +27,7 @@ export function getTaskFlagsFromStatus(status: TaskStatus): { completed: boolean
   }
 }
 
-const STATUS_OPTIONS = [
-  { value: 'todo',        label: 'To Do' },
-  { value: 'in_progress', label: 'In Progress' },
-  { value: 'done',        label: 'Done' },
-];
+
 
 const CATEGORY_OPTIONS = [
   { value: 'Planning',    label: 'Planning' },

@@ -55,7 +55,6 @@ function App() {
   const {
     tasks,
     loading: tasksLoading,
-    addTask,
     updateTask,
     deleteTask,
     toggleComplete,
@@ -88,20 +87,6 @@ function App() {
   // Task Handlers
   // ============================================================
 
-  const handleCreateTask = async (data: Partial<Task>) => {
-    try {
-      await addTask(data.text || 'Untitled', null, []);
-      // If we want to fully support the modal fields we need to update the new task
-      // Since addTask currently only takes text/image/subtasks, we can do a quick fix
-      // by just letting it create and then updating it if necessary, OR we update useTasks
-      // But for now, we'll just let the bulkCreate logic or standard logic handle it.
-      // Wait, let's just use `bulkCreateTasks` for single create too to respect all fields
-      await bulkCreateTasks([data as any]);
-      addToast('Task created successfully', 'success');
-    } catch (err: any) {
-      throw err;
-    }
-  };
 
   const handleUpdateTask = async (id: string, updates: Partial<Task>) => {
     try {

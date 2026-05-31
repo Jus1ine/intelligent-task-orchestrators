@@ -1,6 +1,5 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Pencil, Trash2 } from 'lucide-react';
 import type { Task } from '../../types';
 
 interface TaskCardProps {

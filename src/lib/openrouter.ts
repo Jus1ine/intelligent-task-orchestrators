@@ -1,4 +1,4 @@
-import type { GeneratedSubtask, Priority } from '../types';
+import type { GeneratedSubtask } from '../types';
 
 // ============================================================
 // OpenRouter AI Service
@@ -54,8 +54,6 @@ function parseSubtasks(content: string): GeneratedSubtask[] {
   const parsed = JSON.parse(match[0]) as unknown[];
 
   if (!Array.isArray(parsed)) throw new Error('AI response is not an array');
-
-  const validPriorities: Priority[] = ['low', 'medium', 'high'];
 
   return parsed.slice(0, 5).map((item, index) => {
     if (typeof item !== 'object' || item === null) {

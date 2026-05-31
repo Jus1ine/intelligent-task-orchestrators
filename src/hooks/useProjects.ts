@@ -50,7 +50,7 @@ export function useProjects() {
             title: dto.title,
             description: dto.description ?? null,
             color: dto.color,
-          },
+          } as never,
         ])
         .select()
         .single();
@@ -75,7 +75,7 @@ export function useProjects() {
           ...(dto.title       !== undefined && { title: dto.title }),
           ...(dto.description !== undefined && { description: dto.description }),
           ...(dto.color       !== undefined && { color: dto.color }),
-        })
+        } as never)
         .eq('id', id)
         .select()
         .single();
