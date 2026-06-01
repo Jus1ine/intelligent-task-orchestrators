@@ -1,7 +1,9 @@
 import React from 'react';
-import { ChevronDown, Plus, Pencil, Trash2 } from 'lucide-react';
+import { ChevronDown, Moon, Plus, Pencil, SunMedium, Trash2 } from 'lucide-react';
 import { DroppableTab } from '../kanban/DroppableTab';
 import type { Project } from '../../types';
+
+type ThemeMode = 'light' | 'dark';
 
 interface HeaderProps {
   projects: Project[];
@@ -21,6 +23,8 @@ interface HeaderProps {
     done: number;
   };
   tabs: Record<string, string>;
+  themeMode: ThemeMode;
+  onToggleThemeMode: () => void;
 }
 
 export function Header({
@@ -34,6 +38,8 @@ export function Header({
   setActiveTab,
   taskCounts,
   tabs,
+  themeMode,
+  onToggleThemeMode,
 }: HeaderProps) {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
 
@@ -183,7 +189,17 @@ export function Header({
         </nav>
 
         {/* ── Right: Placeholder to keep center tabs centered (hidden on mobile) ── */}
-        <div className="header-right w-[150px] max-md:hidden">
+        <div className="header-right w-37.5 max-md:hidden">
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={onToggleThemeMode}
+            aria-label={themeMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={themeMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {themeMode === 'dark' ? <SunMedium size={16} /> : <Moon size={16} />}
+            <span>{themeMode === 'dark' ? 'Light mode' : 'Dark mode'}</span>
+          </button>
         </div>
 
         {/* ── Mobile only: Project Dropdown below tabs (hidden on desktop via md:hidden) ── */}

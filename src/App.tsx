@@ -15,6 +15,18 @@ import { useTasks } from './hooks/useTasks';
 import { useToast } from './hooks/useToast';
 import type { Task } from './types';
 
+type ThemeMode = 'light' | 'dark';
+const THEME_STORAGE_KEY = 'orchestrator-theme';
+
+function getInitialTheme(): ThemeMode {
+  if (typeof window === 'undefined') return 'light';
+
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme;
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 // Components
 import { Header } from './components/layout/Header';
 import { TaskList } from './components/kanban/TaskList';
@@ -41,10 +53,23 @@ const TABS = {
 // App
 // ============================================================
 function App() {
+  const [themeMode, setThemeMode] = useState<ThemeMode>(getInitialTheme);
+
   // ── Projects ──────────────────────────────────────────────
   const { projects, loading: projectsLoading, createProject, deleteProject } = useProjects();
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const selectedProject = projects.find((p) => p.id === selectedProjectId) ?? null;
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.theme = themeMode;
+    root.style.colorScheme = themeMode;
+    window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
+  }, [themeMode]);
+
+  const toggleThemeMode = () => {
+    setThemeMode((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   useEffect(() => {
     if (!selectedProjectId && projects.length > 0) {
@@ -255,6 +280,8 @@ function App() {
           setActiveTab={setActiveTab}
           taskCounts={taskCounts}
           tabs={TABS}
+          themeMode={themeMode}
+          onToggleThemeMode={toggleThemeMode}
         />
 
         <main className="app-main">
